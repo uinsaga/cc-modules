@@ -59,7 +59,7 @@ Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
 4. Klik **Next** → **Create a virtual hard disk now** → Ukuran: **20 GB**
 5. Klik **Finish** → VM siap dijalankan
 
-6. **Instalasi Linux:**
+6. **Instalasi Linux:** [Download ISO](https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.6.0-amd64-netinst.iso)
    - Pilih **Start** → Ikuti proses instalasi
    - Pilih **Install** (bukan Graphical Install)
    - Setelan penting:
