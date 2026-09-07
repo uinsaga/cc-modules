@@ -91,6 +91,10 @@ Setelah menyelesaikan praktikum ini, mahasiswa diharapkan mampu:
 Login ke VM Linux dengan user `student`.
 
 ```bash
+# 0. install openssh-server
+sudo apt update
+sudo apt install openssh-server
+
 # 1. Cek status SSH Server
 sudo systemctl status ssh
 
