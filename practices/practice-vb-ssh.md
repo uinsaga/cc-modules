@@ -95,6 +95,9 @@ Login ke VM Linux dengan user `student`.
 sudo apt update
 sudo apt install openssh-server
 
+# check versi ssh jika sudah terinstall
+ssh -V
+
 # 1. Cek status SSH Server
 sudo systemctl status ssh
 
