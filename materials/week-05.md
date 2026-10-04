@@ -1,4 +1,4 @@
-# 🌐 Modul Week 04: Web Server Configuration (Nginx) Advanced
+# 🌐 Modul Week 05: Web Server Configuration (Nginx) Advanced
 
 > **Format:** Praktikum bertahap. Setiap tahap punya tujuan, langkah, dan checkpoint.  
 > Selesaikan satu tahap dulu sebelum lanjut ke tahap berikutnya.
