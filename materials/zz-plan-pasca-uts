@@ -1,0 +1,92 @@
+# 🗺️ Alur Rekomendasi Materi Pasca-UTS (Pekan 09 – 15)
+
+```text
+[Pekan 09-10] Multi-Server & Reverse Proxy/Load Balancing
+       ↓
+[Pekan 11-12] Containerization (Docker Basics & Compose)
+       ↓
+[Pekan 13]    CI/CD & Cloud Automation Basics
+       ↓
+[Pekan 14]    Monitoring & Security
+       ↓
+[Pekan 15-16] Review, Presentasi Mini Project / UAS
+
+```
+
+---
+
+## 📌 Rincian Topik per Pekan
+
+### 🔀 Pekan 09: Advanced Nginx — Reverse Proxy & SSL Automation (Certbot)
+
+* **Konsep:** Memisahkan Web Server (Nginx) dengan App Server (misal: Node.js/Python FastAPI atau PHP di beda VM).
+* **Praktik:**
+* Menjadikan Nginx sebagai **Reverse Proxy** (meneruskan request dari Port 80/443 ke Port aplikasi internal `:3000`/`:8000`).
+* Mengenal **Certbot / Let's Encrypt** (bagaimana cara kerja SSL otomatis di domain publik vs IP lokal).
+
+
+
+### ⚖️ Pekan 10: Load Balancing & High Availability (HA)
+
+* **Konsep:** Bagaimana jika 1 server aplikasi mati/down? Bagaimana membagi beban jika trafik tinggi?
+* **Praktik:**
+* Membuat 2 VM App Server (Web A & Web B).
+* Konfigurasi Nginx sebagai **Load Balancer** menggunakan modul `upstream` (Algoritma Round-Robin & Least Connections).
+* Pengujian *Failover* (Mematikan 1 VM, web tetap jalan di VM lainnya).
+
+
+
+### 🐳 Pekan 11: Introduction to Containerization (Docker Basics)
+
+* **Konsep:** Mengapa harus Docker? Bedanya VM (VirtualBox) vs Container (Docker).
+* **Praktik:**
+* Install Docker & Docker Engine di VM Ubuntu.
+* Menjalankan container pertama (`docker run nginx`, `docker ps`, `docker exec`).
+* Port mapping & Volume binding.
+
+
+
+### 📦 Pekan 12: Docker Compose & Containerized LEMP/App Stack
+
+* **Konsep:** Mengelola multi-container dalam 1 berkas deklaratif.
+* **Praktik:**
+* Buat `docker-compose.yml` untuk memutar seluruh stack (Nginx Container + PHP Container + MariaDB Container) hanya dengan perintah `docker compose up -d`.
+* Mahasiswa akan sadar: *"Ternyata setup LEMP yang kita pelajari Pekan 1–7 bisa dijalankan hanya dalam hitungan detik pakai Docker!"*
+
+
+
+### 🔄 Pekan 13: Introduction to CI/CD & Cloud Automation
+
+* **Konsep:** Bagaimana developer melakukan update program otomatis ke server tanpa SSH manual.
+* **Praktik:**
+* Pengenalan Git & GitHub/GitLab.
+* Setup skrip automasi simpel (misal: Webhook / GitHub Actions / Shell Script deployment) untuk *auto-pull* kode terbaru saat ada pembaharuan.
+
+
+
+### 🛡️ Pekan 14: Server Security, Firewall (UFW), & Monitoring
+
+* **Konsep:** Mengamankan server cloud dari serangan umum.
+* **Praktik:**
+* Konfigurasi Firewall Linux (`ufw allow 80`, `ufw allow 443`, ganti port SSH).
+* Install tools log/monitoring sederhana (misal: `htop`, `netdata`, atau Nginx Access Log Analyzer).
+
+
+
+### 🏆 Pekan 15 & 16: Review, Presentation, & UAS (Final Project)
+
+* **UAS Final Project:** Mahasiswa secara berkelompok mendesain arsitektur cloud sederhana:
+* 1 Nginx Load Balancer / Reverse Proxy.
+* 2 App Server (bisa via Docker Compose).
+* 1 Database Server.
+* Demonstrasi web tetap bisa diakses meskipun salah satu server dimatikan.
+
+
+
+---
+
+## 💡 Rekomendasi Pertemuan Pertama Setelah UTS (Pekan 09)
+
+Materi paling *pas* untuk membuka sesi kuliah setelah UTS adalah **Pekan 09: Reverse Proxy & Load Balancing dasar**.
+
+Sebab, mahasiswa belum perlu install Docker dulu, tapi cukup clone VM yang sudah ada di VirtualBox dari Pekan 7 untuk dijadikan 2 server terpisah, lalu dihubungkan dengan Nginx.
