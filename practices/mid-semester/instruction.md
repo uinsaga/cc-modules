@@ -66,7 +66,7 @@
 #### TUGAS 4: Uji Coba Upload file Ukuran Berkas (>300 MB)
 
 - **Skenario:**
-  Setelah fitur _upload_ di Tugas 3 berjalan normal, gunakan form yang sama untuk mengunggah file sampel berukuran besar (**>300 MB**) yang telah disediakan oleh Dosen.
+  Setelah fitur _upload_ di Tugas 3 berjalan normal, gunakan form yang sama untuk mengunggah file sampel berukuran besar. Contoh file yang diupload bisa diunduh [disini](https://drive.google.com/open?id=1HUr4E48icVgfFxncCNrpl6RU28mqMDoJ&usp=drive_fs).
 - **Pengujian & Analisis:**
   Apakah file berukuran >300 MB tersebut berhasil terunggah? Jika server menolak dan menampilkan pesan kesalahan, analisis penyebabnya, temukan konfigurasi server yang membatasinya, lakukan penyesuaian parameter konfigurasi, _restart_ layanan, dan pastikan file besar tersebut berhasil diunggah dengan sempurna.
 - **Yang Harus Dilaporkan di PDF:**
