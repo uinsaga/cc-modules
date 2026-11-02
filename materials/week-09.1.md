@@ -1,4 +1,4 @@
-# Modul Praktikum Week 09: Reverse Proxy & Load Balancing dengan Nginx (Tanpa Docker)
+# Modul Praktikum Week 09: Reverse Proxy & Load Balancing dengan Nginx
 
 ## 📌 Capaian Pembelajaran (Sub-CPMK 7.1.9)
 
