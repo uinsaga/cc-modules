@@ -606,3 +606,74 @@ Kumpulkan dokumen laporan berformat PDF dengan penamaan format `Week09_[NIM]_[Na
 | **502 Bad Gateway** | Seluruh server backend di dalam blok *upstream* mati atau port tidak merespon. | Periksa proses background server Python dengan perintah `ps aux | grep python3` dan pastikan port 8081, 8082, 8083 aktif. |
 | **403 Forbidden atau Tampilan Nginx Default** | Konfigurasi bawaan Nginx di `/etc/nginx/sites-enabled/default` belum terhapus atau symlink salah. | Hapus symlink default menggunakan `sudo rm /etc/nginx/sites-enabled/default`, lalu jalankan `sudo systemctl reload nginx`. |
 | **Tampilan Web Tidak Berganti Saat Di-refresh** | Browser melakukan *caching* halaman secara agresif. | Gunakan mode *Incognito / Private Browsing* pada browser Anda atau lakukan *Hard Refresh* (`Ctrl + F5`). |
+
+
+## 💡 Additional Info: Tantangan Konsistensi Data & State Management pada Arsitektur Multi-Node
+
+Di dunia nyata, aplikasi *backend* tidak pernah berdiri sendiri secara terisolasi. Dalam arsitektur produksi berskala industri, setiap *node* aplikasi hampir selalu terhubung ke layanan eksternal bersama (*stateful services*), seperti **Database relasional (MySQL/PostgreSQL)**, **NoSQL (MongoDB)**, atau **In-memory cache/Session store (Redis/Memcached)**.
+
+Ketika beberapa *node* aplikasi berjalan di belakang *Load Balancer* dan mengakses sumber daya bersama tersebut, muncul dua tantangan krusial yang harus dipahami oleh setiap pengembang dan *system administrator*:
+
+---
+
+### 1. Masalah Manajemen Sesi (*Session State Management*)
+
+* **Skenario Masalah:** Seorang pengguna melakukan *login* melalui halaman web, dan data sesi pengguna tersebut disimpan secara lokal di dalam memori RAM (*in-memory*) *Node 1*. Ketika pengguna berpindah halaman, Nginx (menggunakan *Round Robin*) mengarahkan permintaan berikutnya ke *Node 2*.
+* **Kendala:** *Node 2* tidak memiliki rekam jejak sesi login pengguna tersebut di memori lokalnya, sehingga pengguna tiba-tiba dianggap *logout* atau menemui pesan *Unauthorized*.
+* **Solusi Industri:**
+* **Pendekatan Infrastruktur:** Menggunakan algoritma **IP Hash** pada Nginx agar permintaan dari IP klien yang sama selalu diarahkan ke *node* yang sama.
+* **Pendekatan Aplikasi (*Best Practice*):** Membuat aplikasi menjadi *stateless* (tidak menyimpan data sesi di RAM lokal), melainkan memindahkan penyimpanan sesi ke sistem terpusat seperti **Redis** atau **Memcached** yang dapat diakses oleh seluruh *node* aplikasi.
+
+
+* **Contoh Implementasi Konsep (Redis Session Store di Python/Flask):**
+```python
+import redis
+from flask import Flask, session
+
+app = Flask(__name__)
+# Menghubungkan aplikasi ke Redis terpusat alih-alih RAM lokal
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_REDIS'] = redis.StrictRedis(host='redis-server-central', port=6379)
+
+```
+
+
+
+---
+
+### 2. Konsistensi Data pada Database Bersama (*Database Consistency*)
+
+* **Skenario Masalah:** *Node 1* dan *Node 2* menerima permintaan tulis (*write/update*) secara bersamaan ke tabel database yang sama (misalnya pengurangan stok produk pada aplikasi *e-commerce*).
+* **Kendala:** Tanpa mekanisme penguncian (*locking*) yang tepat, dapat terjadi *Race Condition* di mana perhitungan stok akhir menjadi tidak sinkron atau salah.
+* **Solusi Industri:**
+* Memanfaatkan fitur **ACID Properties** (*Atomicity, Consistency, Isolation, Durability*) yang disediakan oleh Database Relasional.
+* Mengimplementasikan manajemen transaksi yang ketat serta *Distributed Lock* (misalnya menggunakan Redis Lock) untuk mengamankan operasi penulisan data yang sensitif.
+
+
+* **Contoh Implementasi Konsep (Database Transaction & Row Locking di Python/SQLAlchemy):**
+```python
+from sqlalchemy import select
+
+# Menggunakan transaksi database dengan explicit row locking (SELECT ... FOR UPDATE)
+with db.session.begin():
+    product = db.session.execute(
+        select(Product).filter_by(id=1).with_for_update()
+    ).scalar_one()
+
+    if product.stock > 0:
+        product.stock -= 1
+        db.session.commit()
+
+```
+
+
+
+---
+
+### 3. Relevansi dengan Praktikum Ini
+
+Pada skrip klaster backend Python (`cluster_backend.py`) yang digunakan dalam praktikum ini, Anda telah mensimulasikan konsep nyata tersebut:
+
+* Ketiga *node* aplikasi (*Node-1, Node-2, Node-3*) bertindak sebagai instans aplikasi yang terpisah secara port.
+* Namun, ketiganya terhubung ke satu sumber kebenaran yang sama (*Single Source of Truth*), yaitu berkas database bersama (`shared_database.db`).
+* Ketika trafik didistribusikan oleh Nginx, identitas *node* yang melayani permintaan akan berubah-ubah (sesuai algoritma *Load Balancing*), namun angka akumulasi total akses seluruh sistem akan tetap konsisten dan tersimpan secara terpusat di database.
